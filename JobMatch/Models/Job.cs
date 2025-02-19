@@ -25,6 +25,12 @@ public partial class Job
 
     public string? Requirements { get; set; }
 
+    public DateTime UploadDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
+    public string? JobAddressDetail { get; set; }
+
     public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
 
     public virtual Company? Company { get; set; }

@@ -48,13 +48,13 @@ public partial class JobMatchContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.ApplicationStatus).HasMaxLength(100);
 
-            entity.HasOne(d => d.Candidate).WithMany(p => p.Applications)
-                .HasForeignKey(d => d.CandidateId)
-                .HasConstraintName("FK__Applicati__Candi__300424B4");
-
             entity.HasOne(d => d.Job).WithMany(p => p.Applications)
                 .HasForeignKey(d => d.JobId)
                 .HasConstraintName("FK__Applicati__JobId__2F10007B");
+
+            entity.HasOne(d => d.Resume).WithMany(p => p.Applications)
+                .HasForeignKey(d => d.ResumeId)
+                .HasConstraintName("FK_Applications_Resumes");
         });
 
         modelBuilder.Entity<Company>(entity =>
@@ -68,6 +68,7 @@ public partial class JobMatchContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.Website).HasMaxLength(1000);
 
             entity.HasOne(d => d.User).WithMany(p => p.Companies)
                 .HasForeignKey(d => d.UserId)
@@ -78,12 +79,14 @@ public partial class JobMatchContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__Jobs__3214EC07B6BC1BD5");
 
+            entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.Experience).HasMaxLength(100);
+            entity.Property(e => e.JobAddressDetail).HasMaxLength(255);
             entity.Property(e => e.JobType).HasMaxLength(100);
             entity.Property(e => e.SalaryRange).HasMaxLength(100);
-            entity.Property(e => e.Title)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            entity.Property(e => e.UploadDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
             entity.Property(e => e.WorkAt).HasMaxLength(800);
 
             entity.HasOne(d => d.Company).WithMany(p => p.Jobs)
@@ -112,9 +115,7 @@ public partial class JobMatchContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK__JobCateg__3214EC07FB04E306");
 
-            entity.Property(e => e.CategoryName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            entity.Property(e => e.CategoryName).HasMaxLength(1000);
         });
 
         modelBuilder.Entity<Notification>(entity =>
@@ -138,6 +139,7 @@ public partial class JobMatchContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.ResumeTitle).HasMaxLength(1000);
 
             entity.HasOne(d => d.Candidate).WithMany(p => p.Resumes)
                 .HasForeignKey(d => d.CandidateId)
@@ -174,9 +176,7 @@ public partial class JobMatchContext : DbContext
             entity.Property(e => e.Phone)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.UserName)
-                .HasMaxLength(255)
-                .IsUnicode(false);
+            entity.Property(e => e.UserName).HasMaxLength(255);
             entity.Property(e => e.UserType).HasMaxLength(50);
 
             entity.HasMany(d => d.Skills).WithMany(p => p.Candidates)

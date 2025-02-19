@@ -1,0 +1,197 @@
+﻿@model JobMatch.Models.Job
+
+@{
+	ViewData["Title"] = Model.Title;
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Job Detail Start -->
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+	<div class="container">
+		<div class="row gy-5 gx-4">
+			<div class="col-lg-8">
+				<div class="d-flex align-items-center mb-5">
+					<img class="flex-shrink-0 img-fluid border rounded" src="~/img/uploads/@Model.Company.CompanyImage" alt="" style="width: 80px; height: 80px;">
+					<div class="text-start ps-4">
+						<h3 class="mb-3">@Model.Title</h3>
+						<span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@Model.WorkAt</span>
+						@if (Model.Equals("fulltime"))
+						{
+							<span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Full Time</span>
+
+						}
+						else
+						{
+							<span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>Part Time</span>
+
+						}
+
+						<span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@Model.SalaryRange</span>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+
+						<span class="text-truncate me-0"><i class="fa fa-hourglass-end text-primary me-2"></i>@Model.Experience</span>
+
+
+					</div>
+				</div>
+
+				<div class="mb-5">
+					<h4 class="mb-3">Mô tả công việc</h4>
+					<p>@Model.JobDescription</p>
+					<h4 class="mb-3">Yêu cầu</h4>
+					<p>@Model.Requirements</p>
+					<h4 class="mb-3">Quyền lợi</h4>
+					<p>@Model.Benefits</p>
+					<h4 class="mb-3">Địa điểm làm việc</h4>
+					<p>@Model.JobAddressDetail</p>
+
+				</div>
+
+				<div class="">
+					<h4 class="mb-4">Tải lên CV và ứng tuyển vị trí của bạn</h4>
+					<form>
+
+						<!-- Modal Upload CV -->
+						<div class="modal fade" id="uploadCVModal" tabindex="-1" aria-labelledby="uploadCVModalLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="uploadCVModalLabel">Chọn CV</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<!-- Chọn CV có sẵn -->
+										<label for="radioExisting" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
+											<div class="col-2 d-flex align-items-center">
+												<input type="radio" name="cv-selection-method" value="existing" id="radioExisting" class="form-check-input" checked>
+											</div>
+											<div class="col-10">
+												<h5>Chọn CV của bạn</h5>
+												<select class="form-control" id="cvSelect">
+													<option value="cv1.pdf">CV 1 - cv1.pdf</option>
+													<option value="cv2.pdf">CV 2 - cv2.pdf</option>
+												</select>
+											</div>
+										</label>
+
+										<hr />
+
+										<!-- Tải lên CV mới -->
+										<label for="radioUpload" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
+											<div class="col-2 d-flex align-items-center">
+												<input type="radio" name="cv-selection-method" value="upload" id="radioUpload" class="form-check-input">
+											</div>
+											<div class="col-10">
+												<h5>Tải lên</h5>
+												<input type="file" class="form-control" id="cvUploadInput" disabled>
+											</div>
+										</label>
+									</div>
+
+									<div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+										<button type="button" class="btn btn-primary" id="confirmCVSelection">Chọn</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- end Modal Upload CV -->
+
+
+
+						<div class="row g-3">
+
+							<div class="col-12 col-sm-6">
+								<input type="hidden" value="1" class="form-control bg-white">
+							</div>
+							<div class="col-12 col-sm-6">
+								<button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadCVModal">
+									Chọn CV
+								</button>
+								<span id="selectedCVName" class="ms-2 text-success"></span>
+							</div>
+							<div class="col-12">
+								<textarea class="form-control" rows="5" placeholder="Viết gì đó để gây ấn tượng với nhà tuyển dụng"></textarea>
+							</div>
+							<div class="col-12">
+								<button class="btn btn-primary w-100" type="submit">Ứng tuyển ngay</button>
+							</div>
+						</div>
+
+					</form>
+
+					
+
+				</div>
+
+			</div>
+
+			<div class="col-lg-4">
+				<div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
+					<h4 class="mb-4">Tóm tắt công việc</h4>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Hạn nộp hồ sơ: @Model.EndDate</p>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Hình thức: Full Time</p>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Salary: $123 - $456</p>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Location: New York, USA</p>
+					<p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line: 01 Jan, 2045</p>
+				</div>
+				<div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
+					<h4 class="mb-4">Company Detail</h4>
+					<p class="m-0">Ipsum dolor ipsum accusam stet et et diam dolores, sed rebum sadipscing elitr vero dolores. Lorem dolore elitr justo et no gubergren sadipscing, ipsum et takimata aliquyam et rebum est ipsum lorem diam. Et lorem magna eirmod est et et sanctus et, kasd clita labore.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Job Detail End -->
+
+<script>
+	document.getElementById("radioExisting").addEventListener("change", function () {
+		document.getElementById("cvSelect").disabled = false;
+		document.getElementById("cvUploadInput").disabled = true;
+	});
+
+	document.getElementById("radioUpload").addEventListener("change", function () {
+		document.getElementById("cvSelect").disabled = true;
+		document.getElementById("cvUploadInput").disabled = false;
+	});
+
+
+	document.querySelector('label[for="radioExisting"]').addEventListener("click", function () {
+		document.getElementById("radioExisting").checked = true;
+		document.getElementById("cvSelect").disabled = false;
+		document.getElementById("cvUploadInput").disabled = true;
+	});
+
+	document.querySelector('label[for="radioUpload"]').addEventListener("click", function () {
+		document.getElementById("radioUpload").checked = true;
+		document.getElementById("cvSelect").disabled = true;
+		document.getElementById("cvUploadInput").disabled = false;
+	});
+
+	// Xử lý chọn CV và đóng modal
+	document.getElementById("confirmCVSelection").addEventListener("click", function () {
+		let selectedCV = "";
+
+		if (document.getElementById("radioExisting").checked) {
+			selectedCV = document.getElementById("cvSelect").value;
+		} else if (document.getElementById("radioUpload").checked) {
+			let fileInput = document.getElementById("cvUploadInput");
+			if (fileInput.files.length > 0) {
+				selectedCV = fileInput.files[0].name;
+			} else {
+				alert("Vui lòng chọn một tệp!");
+				return;
+			}
+		}
+
+		// Cập nhật giao diện ngoài modal
+		document.getElementById("selectedCVName").textContent = `Đã chọn: ${selectedCV}`;
+
+		// Đóng modal bằng JavaScript
+		let modalElement = document.getElementById("uploadCVModal");
+		let modalInstance = bootstrap.Modal.getInstance(modalElement);
+		modalInstance.hide();
+	});
+</script>
+

@@ -9,13 +9,15 @@ public partial class Application
 
     public int? JobId { get; set; }
 
-    public int? CandidateId { get; set; }
-
     public string? ApplicationStatus { get; set; }
 
     public DateTime? ApplicationDate { get; set; }
 
-    public virtual User? Candidate { get; set; }
+    public int? ResumeId { get; set; }
+
+    public string? CoverLetter { get; set; }
 
     public virtual Job? Job { get; set; }
+
+    public virtual Resume? Resume { get; set; }
 }

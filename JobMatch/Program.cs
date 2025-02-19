@@ -1,5 +1,8 @@
 
 
+using JobMatch.Models;
+using Microsoft.EntityFrameworkCore;
+
 namespace JobMatch
 {
     public class Program
@@ -10,6 +13,14 @@ namespace JobMatch
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+            builder.Services.AddDbContext<JobMatchContext>(options =>
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("ConnectedDb")
+                    )); ;
+
+
 
             var app = builder.Build();
 

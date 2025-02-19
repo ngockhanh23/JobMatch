@@ -23,6 +23,8 @@ public partial class Company
 
     public DateTime? CreatedAt { get; set; }
 
+    public string? CompanyImage { get; set; }
+
     public virtual ICollection<Job> Jobs { get; set; } = new List<Job>();
 
     public virtual User? User { get; set; }

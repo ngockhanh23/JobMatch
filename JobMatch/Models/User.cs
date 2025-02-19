@@ -19,8 +19,6 @@ public partial class User
 
     public string? UserType { get; set; }
 
-    public virtual ICollection<Application> Applications { get; set; } = new List<Application>();
-
     public virtual ICollection<Company> Companies { get; set; } = new List<Company>();
 
     public virtual ICollection<Notification> Notifications { get; set; } = new List<Notification>();

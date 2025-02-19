@@ -397,3 +397,7 @@
     padding-right: 0;
     border-right: none;
 }
+
+.image-logo-company {
+    object-fit: scale-down;
+}
