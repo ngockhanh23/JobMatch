@@ -1,0 +1,28 @@
+﻿@using JobMatch.Extensions
+@using JobMatch.Models
+
+@{
+    var user = Context.Session.GetObject<UserModel>("UserSession");
+}
+
+@if (user != null)
+{
+    <!-- Nếu đã đăng nhập -->
+    <div class="nav-item dropdown">
+        <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            <img class="avatar-img-nav" src="@user.UserAvatar" />
+            <span>@user.UserName.Split(' ').Last()</span>
+        </div>
+        <div class="dropdown-menu rounded-0 m-0">
+            <a href="#" class="dropdown-item"><i class="fa fa-user"></i> Thông tin của tôi</a>
+            <a href="#" class="dropdown-item"><i class="bi bi-file-earmark-person"></i> CV</a>
+            <a href="#" class="dropdown-item"><i class="fa fa-briefcase"></i> Việc làm đã ứng tuyển</a>
+            <a href="@Url.Action("Logout", "Account")" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Nếu chưa đăng nhập -->
+    <a href="@Url.Action("Login", "Account")" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Đăng nhập<i class="fa fa-arrow-right ms-3"></i></a>
+}

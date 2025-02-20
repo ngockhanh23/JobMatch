@@ -130,14 +130,13 @@
 				<div class="bg-light rounded p-5 mb-4 wow slideInUp" data-wow-delay="0.1s">
 					<h4 class="mb-4">Tóm tắt công việc</h4>
 					<p><i class="fa fa-angle-right text-primary me-2"></i>Hạn nộp hồ sơ: @Model.EndDate</p>
-					<p><i class="fa fa-angle-right text-primary me-2"></i>Hình thức: Full Time</p>
-					<p><i class="fa fa-angle-right text-primary me-2"></i>Salary: $123 - $456</p>
-					<p><i class="fa fa-angle-right text-primary me-2"></i>Location: New York, USA</p>
-					<p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Date Line: 01 Jan, 2045</p>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Hình thức: @Model.JobType</p>
+					<p><i class="fa fa-angle-right text-primary me-2"></i>Salary: @Model.SalaryRange</p>
+					<p class="m-0"><i class="fa fa-angle-right text-primary me-2"></i>Hạn nộp hồ sơ: @Model.EndDate</p>
 				</div>
 				<div class="bg-light rounded p-5 wow slideInUp" data-wow-delay="0.1s">
-					<h4 class="mb-4">Company Detail</h4>
-					<p class="m-0">Ipsum dolor ipsum accusam stet et et diam dolores, sed rebum sadipscing elitr vero dolores. Lorem dolore elitr justo et no gubergren sadipscing, ipsum et takimata aliquyam et rebum est ipsum lorem diam. Et lorem magna eirmod est et et sanctus et, kasd clita labore.</p>
+					<h4 class="mb-4">Giới thiệu công ty</h4>
+					<p class="m-0">@Model.Company.CompanyDescription</p>
 				</div>
 			</div>
 		</div>

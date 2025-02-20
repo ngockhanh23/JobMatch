@@ -1,0 +1,54 @@
+﻿@{
+    ViewData["Title"] = "Đăng ký tài khoản";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Đăng ký tài khoản</h3>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.Error != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.Error</div>
+                    }
+
+                    <form asp-action="Register" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" name="userName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mật khẩu</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="text" name="phone" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Bạn là:</label>
+                            <select name="userType" class="form-control" required>
+                                <option value="candidate">Ứng viên</option>
+                                <option value="recruiter">Nhà tuyển dụng</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Đăng ký</button>
+                    </form>
+
+                    <div class="text-center mt-3">
+                        <span>Đã có tài khoản?</span>
+                        <a asp-controller="Account" asp-action="Login" class="text-primary">Đăng nhập ngay</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

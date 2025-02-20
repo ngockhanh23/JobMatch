@@ -20,9 +20,18 @@ namespace JobMatch
                     builder.Configuration.GetConnectionString("ConnectedDb")
                     )); ;
 
+            builder.Services.AddSession();
+            builder.Services.AddControllersWithViews().AddRazorOptions(options =>
+            {
+                options.ViewLocationFormats.Add("/Views/Shared/PartialViews/{0}.cshtml");
+            }); ;
+            builder.Services.AddDistributedMemoryCache();
 
+            //builder.Services.AddControllersWithViews()
+                
 
             var app = builder.Build();
+            app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

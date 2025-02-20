@@ -40,7 +40,7 @@
         <!-- Spinner End -->
         <!-- Navbar Start -->
         <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-            <a href="index.html" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
+            <a asp-controller="Home" asp-action="Index" class="navbar-brand d-flex align-items-center text-center py-0 px-4 px-lg-5">
                 <h1 class="m-0 text-primary">Job Match</h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -67,20 +67,10 @@
                     </div>
                    @*  <a href="contact.html" class="nav-item nav-link">Contact</a> *@
                 </div>
-                <a href="" class="btn btn-primary rounded-0 py-4 px-lg-5 d-none d-lg-block">Đăng nhập<i class="fa fa-arrow-right ms-3"></i></a>
+                @Html.Partial("UserLogin")
 
-               @*  <div class="nav-item dropdown">
-                    <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                        <img class="avatar-img-nav" src="https://lh3.googleusercontent.com/a/ACg8ocLxdn-67BNsoYhXg2L54lGenbsqIUiMBx6-w2MgLv1RxHk3aTM=s288-c-no" />
-                    </div>
-                    <div class="dropdown-menu rounded-0 m-0">
-                        <a href="" class="dropdown-item"><i class="fa fa-user" aria-hidden="true"></i> Thông tin của tôi</a>
-                        <a href="" class="dropdown-item"><i class="bi bi-file-earmark-person"></i> CV</a>
-                        <a href="" class="dropdown-item"><i class="fa fa-briefcase" aria-hidden="true"></i> Việc làm đã ứng tuyển</a>
-                        <a href="" class="dropdown-item"><i class="bi bi-box-arrow-right"></i> Đăng xuất</a>
 
-                    </div>
-                </div> *@
+
 
             </div>
         </nav>

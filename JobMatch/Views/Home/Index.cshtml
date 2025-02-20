@@ -129,32 +129,10 @@
                     {
                         @foreach (var job in ViewBag.Jobs)
                         {
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <a href="#">
-                                            <img class="flex-shrink-0 img-fluid border rounded image-logo-company" src="~/img/uploads/@job.Company.CompanyImage" alt="" style="width: 80px; height: 80px;">
+                            @await Microsoft.AspNetCore.Mvc.Rendering.HtmlHelperPartialExtensions.PartialAsync(Html, "JobItem", job)
 
-                                        </a>
-                                        <div class="text-start ps-4">
-                                            <a asp-controller="Job" asp-action="JobDetail" asp-route-jobID="@job.Id" class="mb-3">
+                            
 
-                                                <h5>@job.Title</h5>
-                                            </a>
-                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@job.WorkAt</span>
-                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>@job.JobType</span>
-                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@job.SalaryRange</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                            <a class="btn btn-primary" href="#">Ứng tuyển ngay</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Hạn nộp hồ sơ: @job.EndDate</small>
-                                    </div>
-                                </div>
-                            </div>
                         }
                     } 
                     else
@@ -173,33 +151,8 @@
                     {
                         @foreach (var job in ViewBag.FulltimeJobs)
                         {
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <a href="#">
-                                            <img class="flex-shrink-0 img-fluid border rounded image-logo-company" src="~/img/uploads/@job.Company.CompanyImage" alt="" style="width: 80px; height: 80px;">
+                            @await Microsoft.AspNetCore.Mvc.Rendering.HtmlHelperPartialExtensions.PartialAsync(Html, "JobItem", job)
 
-                                        </a>
-                                        <div class="text-start ps-4">
-                                            <a asp-controller="Job" asp-action="JobDetail" asp-route-jobID="@job.Id" class="mb-3">
-
-
-                                                <h5>@job.Title</h5>
-                                            </a>
-                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@job.WorkAt</span>
-                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>@job.JobType</span>
-                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@job.SalaryRange</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                            <a class="btn btn-primary" href="#">Ứng tuyển ngay</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Hạn nộp hồ sơ: @job.EndDate</small>
-                                    </div>
-                                </div>
-                            </div>
                         }
                     }
                     else
@@ -216,32 +169,8 @@
                     {
                         @foreach (var job in ViewBag.ParttimeJobs)
                         {
-                            <div class="job-item p-4 mb-4">
-                                <div class="row g-4">
-                                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                                        <a href="#">
-                                            <img class="flex-shrink-0 img-fluid border rounded image-logo-company" src="~/img/uploads/@job.Company.CompanyImage" alt="" style="width: 80px; height: 80px;">
+                            @await Microsoft.AspNetCore.Mvc.Rendering.HtmlHelperPartialExtensions.PartialAsync(Html, "JobItem", job)
 
-                                        </a>
-                                        <div class="text-start ps-4">
-                                            <a asp-controller="Job" asp-action="JobDetail" asp-route-jobID="@job.Id" class="mb-3">
-
-                                                <h5>@job.Title</h5>
-                                            </a>
-                                            <span class="text-truncate me-3"><i class="fa fa-map-marker-alt text-primary me-2"></i>@job.WorkAt</span>
-                                            <span class="text-truncate me-3"><i class="far fa-clock text-primary me-2"></i>@job.JobType</span>
-                                            <span class="text-truncate me-0"><i class="far fa-money-bill-alt text-primary me-2"></i>@job.SalaryRange</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-12 col-md-4 d-flex flex-column align-items-start align-items-md-end justify-content-center">
-                                        <div class="d-flex mb-3">
-                                            <a class="btn btn-light btn-square me-3" href=""><i class="far fa-heart text-primary"></i></a>
-                                            <a class="btn btn-primary" href="#">Ứng tuyển ngay</a>
-                                        </div>
-                                        <small class="text-truncate"><i class="far fa-calendar-alt text-primary me-2"></i>Hạn nộp hồ sơ: @job.EndDate</small>
-                                    </div>
-                                </div>
-                            </div>
                         }
                     }
                     else
