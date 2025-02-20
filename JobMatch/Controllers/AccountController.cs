@@ -42,7 +42,11 @@ namespace JobMatch.Controllers
                     UserType = userDB.UserType
                 };
 
-                _userService.SetUser(user); // Lưu user vào UserService
+                _userService.SetUser(user); 
+                if(user.UserType == "recruiter")
+                {
+					return RedirectToAction("Index", "Recruiter");
+				}
                 return RedirectToAction("Index", "Home");
             }
 
@@ -70,7 +74,7 @@ namespace JobMatch.Controllers
             {
                 UserName = userName,
                 Email = email,
-                UserAvatar = "default-avatar.jpg",
+                UserAvatar = "~/img/uploads/default-avatar.jpg",
                 UserPassword = hashedPassword,
                 Phone = phone,
                 UserType = userType

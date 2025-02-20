@@ -9,7 +9,7 @@
 {
     <div class="nav-item dropdown">
         <div class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-            <img class="avatar-img-nav" src="~/img/uploads/@user.UserAvatar" alt="Avatar" />
+            <img class="avatar-img-nav" src="@Url.Content(user.UserAvatar)" alt="Avatar" />
             <span>@(user.UserName?.Split(' ').Last())</span>
         </div>
         <div class="dropdown-menu rounded-0 m-0">

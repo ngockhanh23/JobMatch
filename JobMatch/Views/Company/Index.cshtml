@@ -1,0 +1,70 @@
+﻿@model List<JobMatch.Models.Company>
+
+@{
+    ViewData["Title"] = "Danh sách công ty";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+}
+
+<h2 class="mb-4">Danh sách Công Ty</h2>
+<a asp-action="Create" asp-controller="Company" class="btn btn-primary mb-3">Thêm Công Ty</a>
+
+
+@if (Model == null || !Model.Any())
+{
+    <p>Bạn chưa có công ty nào.</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-4 g-4">
+        @foreach (var company in Model)
+        {
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@Url.Content(company.CompanyImage)" class="card-img-top" alt="Company Image" style="height: 150px; object-fit: cover;">
+
+                    <div class="card-body">
+                        <h5 class="card-title">@company.CompanyName</h5>
+                        <p><strong>Địa chỉ:</strong> @company.CompanyLocation</p>
+                        <p><strong>Quy mô:</strong> @company.CompanySize</p>
+                        <a href="@company.Website" class="btn btn-primary" target="_blank">Xem Website</a>
+                        <div class="mt-2">
+                            <a asp-action="Edit" asp-controller="Company" asp-route-id="@company.Id" class="btn btn-warning btn-sm">Sửa</a>
+                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" data-id="@company.Id">Xóa</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<!-- Modal Xác Nhận Xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa công ty này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a id="confirmDeleteBtn" href="#" class="btn btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var confirmDeleteModal = document.getElementById('confirmDeleteModal');
+        confirmDeleteModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var companyId = button.getAttribute('data-id');
+            var deleteUrl = `/Company/Delete/${companyId}`;
+            document.getElementById("confirmDeleteBtn").setAttribute("href", deleteUrl);
+        });
+    });
+</script>

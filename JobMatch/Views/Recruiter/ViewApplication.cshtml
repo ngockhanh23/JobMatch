@@ -1,0 +1,46 @@
+﻿@model JobMatch.Models.Application
+
+@{
+    ViewData["Title"] = "Chi tiết CV";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+}
+<a asp-action="JobApplications" asp-route-jobId="@Model.JobId" class="btn btn-secondary mt-3">🔙 Quay lại</a>
+<a asp-action="JobList" class="btn btn-outline-secondary mt-3">🏠 Quay về danh sách công việc</a>
+
+<h2>Chi tiết đơn ứng tuyển</h2>
+
+<div class="mb-3">
+    <a asp-action="ViewResume" asp-controller="Resume" asp-route-id="@Model.Resume?.Id" class="btn btn-primary">Xem CV</a>
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Cover Letter</label>
+    <textarea class="form-control" rows="5" readonly>@Model.CoverLetter</textarea>
+</div>
+
+<div class="mb-3">
+    
+    <br/>
+    <label class="form-label">Trạng thái đơn ứng tuyển</label>
+
+    <div class="mb-3">
+        <form asp-action="UpdateApplicationStatus" method="post">
+            <input type="hidden" name="applicationId" value="@Model.Id" />
+
+            <button type="submit" class="btn btn-success" name="status" value="Accepted"
+            @(Model.ApplicationStatus == "Accepted" ? "disabled" : "")>
+                ✅ Phù hợp
+            </button>
+
+            <button type="submit" class="btn btn-danger" name="status" value="Rejected"
+            @(Model.ApplicationStatus == "Rejected" ? "disabled" : "")>
+                ❌ Không phù hợp
+            </button>
+        </form>
+    </div>
+
+</div>
+
+
+
+

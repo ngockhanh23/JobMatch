@@ -1,0 +1,56 @@
+﻿@{
+	Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+}
+
+@model JobMatch.Models.Job
+
+@{
+    ViewData["Title"] = "Thêm Công Việc";
+}
+
+<h2>Thêm Công Việc</h2>
+
+<form asp-action="Create" method="post">
+    <div class="mb-3">
+        <label class="form-label">Tiêu đề</label>
+        <input asp-for="Title" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Công ty</label>
+        <select asp-for="CompanyId" class="form-select">
+            @foreach (var company in ViewBag.Companies)
+            {
+                <option value="@company.Id">@company.CompanyName</option>
+            }
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mô tả công việc</label>
+        <textarea asp-for="JobDescription" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Mức lương</label>
+        <select asp-for="SalaryRange" class="form-select">
+            <option value="">-- Chọn mức lương --</option>
+            <option value="Dưới 10 triệu">Dưới 10 triệu</option>
+            <option value="10 - 15 triệu">10 - 15 triệu</option>
+            <option value="15 - 20 triệu">15 - 20 triệu</option>
+            <option value="20 - 30 triệu">20 - 30 triệu</option>
+            <option value="Trên 30 triệu">Trên 30 triệu</option>
+            <option value="Thỏa thuận">Thỏa thuận</option>
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Ngày hết hạn</label>
+        <input asp-for="EndDate" type="date" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+

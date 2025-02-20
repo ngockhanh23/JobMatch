@@ -1,0 +1,60 @@
+﻿@model JobMatch.Models.Job
+
+@{
+    ViewData["Title"] = "Danh sách đơn ứng tuyển";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+}
+
+<h2>Danh sách đơn ứng tuyển cho: @Model.Title</h2>
+
+<a asp-action="JobList" class="btn btn-secondary mb-3">Quay lại danh sách công việc</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ứng viên</th>
+            <th>Tiêu đề Resume</th>
+            <th>Trạng thái</th>
+            <th>Ngày nộp</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Applications.Any())
+        {
+            int index = 1;
+            @foreach (var application in Model.Applications)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@(application.Resume?.Candidate?.UserName ?? "N/A")</td>
+                    <td>@(application.Resume?.ResumeTitle ?? "Không có tiêu đề")</td>
+                    <td>
+                        <span class="badge bg-@(
+                                application.ApplicationStatus == "Đã ứng tuyển" ? "primary" :
+                                application.ApplicationStatus == "Đã xem" ? "dark" :
+                                application.ApplicationStatus == "Phù hợp" ? "success" :
+                                "danger")">
+                            @application.ApplicationStatus
+                        </span>
+                    </td>
+
+                    <td>@application.ApplicationDate?.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        <a asp-action="ViewResume" asp-controller="Resume" asp-route-id="@application.Resume?.Id" class="btn btn-primary">Xem CV</a>
+                        <a href="@Url.Action("DownloadResume", "Resume", new { id = application.Resume?.Id })" class="btn btn-warning">Tải CV</a>
+                        <a asp-action="ViewApplication" asp-controller="Recruiter" asp-route-applicationId="@application.Id" class="btn btn-info">Xem chi tiết</a>
+                    </td>
+
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr><td colspan="6" class="text-center">Không có đơn ứng tuyển nào.</td></tr>
+        }
+    </tbody>
+</table>
+

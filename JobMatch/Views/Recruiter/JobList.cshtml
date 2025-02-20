@@ -1,0 +1,82 @@
+﻿@model List<JobMatch.Models.Job>
+
+@{
+    ViewData["Title"] = "Danh sách công việc";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+}
+
+<h2>Danh sách công việc</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">Thêm Công Việc</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Tiêu đề</th>
+            <th>Công ty</th>
+            <th>Ngày đăng</th>
+            <th>Số người ứng tuyển</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Any())
+        {
+            int index = 1;
+            @foreach (var job in Model)
+            {
+                <tr>
+                    <td>@index</td>
+                    <td>@job.Title</td>
+                    <td>@(job.Company != null ? job.Company.CompanyName : "N/A")</td>
+                    <td>@job.UploadDate.ToString("dd/MM/yyyy")</td>
+                    <td>
+                        @job.Applications.Count
+                        @if (job.Applications.Count > 0)
+                        {
+                            <a asp-action="JobApplications" asp-route-jobId="@job.Id" class="btn btn-info btn-sm">Xem chi tiết</a>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@job.Id" class="btn btn-warning">Sửa</a>
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" onclick="setDeleteUrl(@job.Id)">Xóa</button>
+                    </td>
+
+                </tr>
+                index++;
+            }
+        }
+        else
+        {
+            <tr><td colspan="6" class="text-center">Không có công việc nào.</td></tr>
+        }
+    </tbody>
+</table>
+
+<!-- Modal Xác Nhận Xóa -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa công việc này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <a id="confirmDeleteBtn" class="btn btn-danger">Xóa</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteUrl(jobId) {
+        var deleteUrl = "/Recruiter/Delete/" + jobId; // Đổi đường dẫn nếu cần
+        document.getElementById("confirmDeleteBtn").setAttribute("href", deleteUrl);
+    }
+</script>
+

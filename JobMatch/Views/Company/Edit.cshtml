@@ -1,0 +1,69 @@
+﻿@model JobMatch.Models.Company
+@inject JobMatch.Services.UserService UserService
+
+
+@{
+    ViewData["Title"] = "Chỉnh sửa công ty";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
+    var user = UserService.GetUser();
+}
+
+<h2 class="mb-4">Chỉnh sửa Công Ty</h2>
+
+<form asp-action="Edit" method="post" enctype="multipart/form-data">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="CompanyName" class="form-label">Tên Công Ty</label>
+        <input asp-for="CompanyName" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CompanyDescription" class="form-label">Mô Tả</label>
+        <textarea asp-for="CompanyDescription" class="form-control"></textarea>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CompanyLocation" class="form-label">Địa Chỉ</label>
+        <input asp-for="CompanyLocation" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+    <label asp-for="CompanySize" class="form-label">Quy Mô</label>
+        <select asp-for="CompanySize" class="form-select">
+            <option value="Nhỏ (<50 nhân viên)">Nhỏ (<50 nhân viên)</option>
+            <option value="Vừa (50-200 nhân viên)">Vừa (50-200 nhân viên)</option>
+            <option value="Lớn (>200 nhân viên)">Lớn (>200 nhân viên)</option>
+        </select>
+    </div>
+
+
+    <div class="mb-3">
+        <label asp-for="Website" class="form-label">Website</label>
+        <input asp-for="Website" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ContactEmail" class="form-label">Email Liên Hệ</label>
+        <input asp-for="ContactEmail" class="form-control" type="email" />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Ảnh Công Ty</label>
+        @if (!string.IsNullOrEmpty(Model.CompanyImage))
+
+            {
+            <div class="mb-2">
+                <img src="@Url.Content(Model.CompanyImage)" alt="Company Image" style="max-width: 200px; height: auto; border-radius: 5px;" />
+
+            </div>
+        }
+        <input type="hidden" name="ExistingCompanyImage" value="@Model.CompanyImage" />
+        <input type="file" name="CompanyImageFile" class="form-control" accept="image/*" />
+    </div>
+
+    <input type="hidden" name="UserId" value="@user.Id" />
+
+    <button type="submit" class="btn btn-success">Lưu</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>

@@ -26,9 +26,6 @@ namespace JobMatch.Controllers
         {
             var user = _userService.GetUser();
 
-			var isApplied = _dbContext.Applications.Any(a => a.JobId == jobID && a.Resume.CandidateId == user.Id);
-			ViewBag.IsApplied = isApplied;
-            
             var job = _dbContext.Jobs
                 .Include(j => j.Company) 
                 .FirstOrDefault(j => j.Id == jobID);
@@ -42,13 +39,20 @@ namespace JobMatch.Controllers
             {
 				var cvList = _dbContext.Resumes.Where(r => r.CandidateId == user.Id).ToList();
 				ViewBag.CVList = cvList;
-			}
+                var isApplied = _dbContext.Applications.Any(a => a.JobId == jobID && a.Resume.CandidateId == user.Id);
+
+                ViewBag.IsApplied = isApplied;
+				
+            }
             else 
             {
+                
                 ViewBag.CVList = null;
+                ViewBag.IsApplied = false;
+
             }
 
-			return View(job); 
+            return View(job); 
         }
 
 		[HttpPost]
