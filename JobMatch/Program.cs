@@ -1,6 +1,7 @@
-
+﻿
 
 using JobMatch.Models;
+using JobMatch.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace JobMatch
@@ -27,8 +28,13 @@ namespace JobMatch
             }); ;
             builder.Services.AddDistributedMemoryCache();
 
-            //builder.Services.AddControllersWithViews()
-                
+            builder.Services.AddScoped<ResumeService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<UserService>(); // Đăng ký UserService
+
+
+
+
 
             var app = builder.Build();
             app.UseSession();

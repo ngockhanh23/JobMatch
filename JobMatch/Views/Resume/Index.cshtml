@@ -1,0 +1,93 @@
+﻿@using JobMatch.Extensions
+@using JobMatch.Models
+@model List<JobMatch.Models.Resume>
+
+@{
+    ViewData["Title"] = "Danh sách hồ sơ";
+    
+    var user = Context.Session.GetObject<UserModel>("UserSession");
+
+}
+
+
+<div class="container mt-5">
+    <h2>Danh sách hồ sơ</h2>
+
+    <!-- Form tải lên file PDF -->
+    <form asp-action="UploadResume" asp-controller="Resume" method="post" enctype="multipart/form-data">
+        
+        <div class="mb-3">
+            <label class="form-label">Chọn file PDF</label>
+            <input type="file" name="resumeFile" class="form-control" accept=".pdf" required>
+        </div>
+        <input type="hidden" name="userId" value="@user.Id">
+        <button type="submit" class="btn btn-success">Tải lên</button>
+    </form>
+
+    <table class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Tiêu đề</th>
+                <th>Ngày tạo</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model != null && Model.Any())
+            {
+                int index = 1;
+                foreach (var resume in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@resume.ResumeTitle</td>
+                        <td>@(resume.CreatedAt.HasValue ? resume.CreatedAt.Value.ToString("dd/MM/yyyy") : "N/A")</td>
+                        <td>
+                            <a asp-action="ViewResume" asp-controller="Resume" asp-route-id="@resume.Id" class="btn btn-primary">Xem</a>
+                            @if (resume.ResumeFile != null)
+                            {
+                                <a href="@Url.Action("DownloadResume", "Resume", new { id = resume.Id })" class="btn btn-warning">Tải xuống</a>
+                            }
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal" onclick="setDeleteId(@resume.Id)">Xóa</button>
+                        </td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center">Không có hồ sơ nào.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa hồ sơ này không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form id="deleteForm" method="post" asp-action="DeleteResume" asp-controller="Resume">
+                    <input type="hidden" name="id" id="deleteResumeId">
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function setDeleteId(resumeId) {
+        document.getElementById("deleteResumeId").value = resumeId;
+    }
+</script>

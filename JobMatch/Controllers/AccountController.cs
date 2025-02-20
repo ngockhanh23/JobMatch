@@ -1,5 +1,6 @@
 ﻿using JobMatch.Extensions;
 using JobMatch.Models;
+using JobMatch.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Security.Cryptography;
@@ -10,10 +11,12 @@ namespace JobMatch.Controllers
     public class AccountController : Controller
     {
         private readonly JobMatchContext _dbContext;
+        private readonly UserService _userService;
 
-        public AccountController(JobMatchContext dbContext)
+        public AccountController(JobMatchContext dbContext, UserService userService)
         {
             _dbContext = dbContext;
+            _userService = userService;
         }
 
         public IActionResult Login()
@@ -39,7 +42,7 @@ namespace JobMatch.Controllers
                     UserType = userDB.UserType
                 };
 
-                HttpContext.Session.SetObject("UserSession", user);
+                _userService.SetUser(user); // Lưu user vào UserService
                 return RedirectToAction("Index", "Home");
             }
 
@@ -63,14 +66,15 @@ namespace JobMatch.Controllers
 
             string hashedPassword = HashMD5(password);
 
-            var newUser = new User();
-            newUser.UserName = userName;
-            newUser.Email = email;
-            newUser.UserAvatar = "default-avatar.jpg";
-            newUser.UserPassword = hashedPassword;
-            newUser.Phone = phone;
-            newUser.UserType = userType;
-            
+            var newUser = new User
+            {
+                UserName = userName,
+                Email = email,
+                UserAvatar = "default-avatar.jpg",
+                UserPassword = hashedPassword,
+                Phone = phone,
+                UserType = userType
+            };
 
             _dbContext.Users.Add(newUser);
             _dbContext.SaveChanges();
@@ -80,7 +84,7 @@ namespace JobMatch.Controllers
 
         public IActionResult Logout()
         {
-            HttpContext.Session.Clear();
+            _userService.ClearUser(); // Xóa user khỏi session và service
             return RedirectToAction("Index", "Home");
         }
 

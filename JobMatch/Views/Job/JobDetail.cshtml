@@ -1,8 +1,11 @@
 ﻿@model JobMatch.Models.Job
+@inject JobMatch.Services.UserService UserService
 
 @{
 	ViewData["Title"] = Model.Title;
 	Layout = "~/Views/Shared/_Layout.cshtml";
+	var user = UserService.GetUser();
+
 }
 
 <!-- Job Detail Start -->
@@ -48,73 +51,91 @@
 				</div>
 
 				<div class="">
+					
 					<h4 class="mb-4">Tải lên CV và ứng tuyển vị trí của bạn</h4>
-					<form>
+					@if (TempData["ErrorMessage"] != null)
+					{
+						<div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+					}
+					<form method="post" action="@Url.Action("ApplyJob", "Job")" enctype="multipart/form-data">
 
-						<!-- Modal Upload CV -->
-						<div class="modal fade" id="uploadCVModal" tabindex="-1" aria-labelledby="uploadCVModalLabel" aria-hidden="true">
-							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h5 class="modal-title" id="uploadCVModalLabel">Chọn CV</h5>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										<!-- Chọn CV có sẵn -->
-										<label for="radioExisting" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
-											<div class="col-2 d-flex align-items-center">
-												<input type="radio" name="cv-selection-method" value="existing" id="radioExisting" class="form-check-input" checked>
-											</div>
-											<div class="col-10">
-												<h5>Chọn CV của bạn</h5>
-												<select class="form-control" id="cvSelect">
-													<option value="cv1.pdf">CV 1 - cv1.pdf</option>
-													<option value="cv2.pdf">CV 2 - cv2.pdf</option>
-												</select>
-											</div>
-										</label>
 
-										<hr />
+						<input type="hidden" name="jobID" value="@Model.Id" />
 
-										<!-- Tải lên CV mới -->
-										<label for="radioUpload" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
-											<div class="col-2 d-flex align-items-center">
-												<input type="radio" name="cv-selection-method" value="upload" id="radioUpload" class="form-check-input">
-											</div>
-											<div class="col-10">
-												<h5>Tải lên</h5>
-												<input type="file" class="form-control" id="cvUploadInput" disabled>
-											</div>
-										</label>
-									</div>
+						@if (user != null)
+						{
+							<!-- Modal Upload CV -->
+							<div class="modal fade" id="uploadCVModal" tabindex="-1" aria-labelledby="uploadCVModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title" id="uploadCVModalLabel">Chọn CV</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body">
+											<!-- Chọn CV có sẵn -->
+											<label for="radioExisting" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
+												<div class="col-2 d-flex align-items-center">
+													<input type="radio" name="cvSelectionMethod" value="existing" id="radioExisting" class="form-check-input" checked>
+												</div>
+												<div class="col-10">
+													<h5>Chọn CV của bạn</h5>
+													<select class="form-control" name="cvID" id="cvSelect">
+														<option value="0">Chọn CV có sẵn</option>
 
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-										<button type="button" class="btn btn-primary" id="confirmCVSelection">Chọn</button>
+														@foreach (var cv in ViewBag.CvList)
+														{
+															<option value="@cv.Id">@cv.ResumeTitle</option>
+
+														}
+													</select>
+												</div>
+											</label>
+
+											<hr />
+
+											<!-- Tải lên CV mới -->
+											<label for="radioUpload" class="row mb-3 border rounded p-2 d-flex align-items-center" style="cursor: pointer;">
+												<div class="col-2 d-flex align-items-center">
+													<input type="radio" name="cvSelectionMethod" value="upload" id="radioUpload" class="form-check-input">
+												</div>
+												<div class="col-10">
+													<h5>Tải lên</h5>
+													<input type="file" name="resumeFile" class="form-control" id="cvUploadInput" disabled>
+												</div>
+											</label>
+										</div>
+
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+											<button type="button" class="btn btn-primary" id="confirmCVSelection">Chọn</button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-						<!-- end Modal Upload CV -->
+							<!-- end Modal Upload CV -->
+						}
 
-
-
-						<div class="row g-3">
-
-							<div class="col-12 col-sm-6">
-								<input type="hidden" value="1" class="form-control bg-white">
-							</div>
-							<div class="col-12 col-sm-6">
+						<div class="row g-3">							
+							<div>
 								<button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#uploadCVModal">
 									Chọn CV
 								</button>
 								<span id="selectedCVName" class="ms-2 text-success"></span>
 							</div>
 							<div class="col-12">
-								<textarea class="form-control" rows="5" placeholder="Viết gì đó để gây ấn tượng với nhà tuyển dụng"></textarea>
+								<textarea class="form-control" name="coverLetter" rows="5" placeholder="Viết gì đó để gây ấn tượng với nhà tuyển dụng"></textarea>
 							</div>
 							<div class="col-12">
-								<button class="btn btn-primary w-100" type="submit">Ứng tuyển ngay</button>
+								@if(ViewBag.IsApplied != null)
+								{
+									<button class="btn btn-primary w-100" disabled>Đã ứng tuyển <i class="fa fa-check" aria-hidden="true"></i> </button>
+								}
+								else
+								{
+									<button class="btn btn-primary w-100" type="submit">Ứng tuyển ngay</button>
+
+								}
 							</div>
 						</div>
 
@@ -168,29 +189,41 @@
 		document.getElementById("cvUploadInput").disabled = false;
 	});
 
-	// Xử lý chọn CV và đóng modal
 	document.getElementById("confirmCVSelection").addEventListener("click", function () {
 		let selectedCV = "";
 
 		if (document.getElementById("radioExisting").checked) {
-			selectedCV = document.getElementById("cvSelect").value;
-		} else if (document.getElementById("radioUpload").checked) {
+			let cvSelect = document.getElementById("cvSelect");
+			let selectedOption = cvSelect.options[cvSelect.selectedIndex];
+
+			if (cvSelect.value === "0") {
+				alert("Vui lòng chọn CV có sẵn hoặc tải lên!");
+				return;
+			}
+
+			selectedCV = selectedOption.text.trim(); // Lấy tên CV thay vì ID
+			console.log("Chọn CV có sẵn:", selectedCV);
+		}
+		else if (document.getElementById("radioUpload").checked) {
 			let fileInput = document.getElementById("cvUploadInput");
 			if (fileInput.files.length > 0) {
 				selectedCV = fileInput.files[0].name;
+				console.log("Tải lên CV:", selectedCV);
 			} else {
 				alert("Vui lòng chọn một tệp!");
 				return;
 			}
 		}
 
-		// Cập nhật giao diện ngoài modal
+		// Cập nhật UI để hiển thị tên CV
 		document.getElementById("selectedCVName").textContent = `Đã chọn: ${selectedCV}`;
+		console.log("CV đã chọn hiển thị:", selectedCV);
 
 		// Đóng modal bằng JavaScript
 		let modalElement = document.getElementById("uploadCVModal");
 		let modalInstance = bootstrap.Modal.getInstance(modalElement);
 		modalInstance.hide();
 	});
+
 </script>
 
