@@ -1,5 +1,48 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model List<JobMatch.Models.Notification>
+
 @{
+    ViewData["Title"] = "Danh sách thông báo";
+    Layout = "~/Views/Shared/_RecruiterLayout.cshtml";
 }
+
+<h2>🔔 Thông báo</h2>
+
+
+
+<ul id="notificationList" class="list-group">
+    @foreach (var notification in Model)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+            @notification.Content
+            <span class="badge bg-@(notification.IsRead == true ? "secondary" : "primary")">
+                @(notification.IsRead == true ? "Đã đọc" : "Mới")
+            </span>
+        </li>
+    }
+</ul>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+<script>
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/notificationHub")
+        .build();
+
+    connection.start().then(function () {
+        console.log("SignalR connected!");
+    }).catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    connection.on("ReceiveNotification", function (message) {
+        console.log("🔔 Thông báo mới:", message);
+
+        // Cập nhật danh sách thông báo mà không cần reload trang
+        var notificationList = document.getElementById("notificationList");
+        var newNotification = document.createElement("li");
+        newNotification.className = "list-group-item d-flex justify-content-between align-items-center";
+        newNotification.innerHTML = `${message} <span class="badge bg-primary">Mới</span>`;
+
+        notificationList.prepend(newNotification);
+    });
+</script>
+

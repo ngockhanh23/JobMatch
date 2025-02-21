@@ -31,13 +31,22 @@ namespace JobMatch
             builder.Services.AddScoped<ResumeService>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<UserService>(); // Đăng ký UserService
-
+           
+            builder.Services.AddSignalR();  
 
 
 
 
             var app = builder.Build();
+           
+           
+           
             app.UseSession();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<NotificationHub>("/notificationHub");
+            });
+            app.UseRouting();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

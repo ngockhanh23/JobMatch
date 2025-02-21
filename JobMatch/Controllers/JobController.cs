@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using JobMatch.Services;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.SignalR;
 
 
 namespace JobMatch.Controllers
@@ -11,16 +12,18 @@ namespace JobMatch.Controllers
     {
         private readonly JobMatchContext _dbContext;
         private readonly UserService _userService;
-		private readonly ResumeService _resumeService;
+        private readonly ResumeService _resumeService;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-
-		// Inject DbContext vào constructor
-		public JobController(JobMatchContext dbContext , UserService userService, ResumeService resumeService)
+        
+        public JobController(JobMatchContext dbContext, UserService userService, ResumeService resumeService, IHubContext<NotificationHub> hubContext)
         {
             _dbContext = dbContext;
             _userService = userService;
-			_resumeService = resumeService;
+            _resumeService = resumeService;
+            _hubContext = hubContext; 
         }
+
 
         public IActionResult JobDetail(int jobID)
         {
@@ -55,57 +58,77 @@ namespace JobMatch.Controllers
             return View(job); 
         }
 
-		[HttpPost]
-		public IActionResult ApplyJob(int jobID, int cvID, string coverLetter, IFormFile resumeFile, string cvSelectionMethod)
-		{
-			var user = _userService.GetUser();
-			int resumeID = cvID;
+        [HttpPost]
+        public async Task<IActionResult> ApplyJob(int jobID, int cvID, string coverLetter, IFormFile resumeFile, string cvSelectionMethod)
+        {
+            var user = _userService.GetUser();
+            int resumeID = cvID;
 
-			if (user == null)
-			{
-				TempData["ErrorMessage"] = "Bạn cần đăng nhập để ứng tuyển!";
-				return RedirectToAction("JobDetail", new { jobID });
-			}
+            if (user == null)
+            {
+                TempData["ErrorMessage"] = "Bạn cần đăng nhập để ứng tuyển!";
+                return RedirectToAction("JobDetail", new { jobID });
+            }
+
+            if (cvID == null && resumeFile == null)
+            {
+                TempData["ErrorMessage"] = "Hãy chọn ít nhất 1 CV";
+                return RedirectToAction("JobDetail", new { jobID });
+            }
+
+            if (cvSelectionMethod == "upload")
+            {
+                Resume resumeUploaded = _resumeService.UploadResume(resumeFile, user.Id);
+
+                if (resumeUploaded == null)
+                {
+                    TempData["ErrorMessage"] = "Lỗi khi tải lên CV. Vui lòng thử lại!";
+                    return RedirectToAction("JobDetail", new { jobID });
+                }
+                resumeID = resumeUploaded.Id;
+            }
+
+            var application = new Application
+            {
+                JobId = jobID,
+                ResumeId = resumeID,
+                CoverLetter = coverLetter,
+                ApplicationStatus = "Đã ứng tuyển",
+                ApplicationDate = DateTime.Now
+            };
+
+            _dbContext.Applications.Add(application);
+            await _dbContext.SaveChangesAsync();
+
+            // 🛑 Lấy thông tin nhà tuyển dụng của công việc này
+            var job = await _dbContext.Jobs
+                .Include(j => j.Company)
+                .FirstOrDefaultAsync(j => j.Id == jobID);
+
+            if (job?.Company != null)
+            {
+                var notification = new Notification
+                {
+                    UserId = job.Company.UserId, // Nhà tuyển dụng nhận thông báo
+                    Content = $"Ứng viên {user.UserName} đã ứng tuyển vào công việc {job.Title}",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+
+                _dbContext.Notifications.Add(notification);
+                await _dbContext.SaveChangesAsync();
+
+                // 🛑 **Gửi thông báo realtime qua SignalR**
+                await _hubContext.Clients.User(job.Company.UserId.ToString())
+                    .SendAsync("ReceiveNotification", notification.Content);
+            }
+
+            TempData["SuccessMessage"] = "Ứng tuyển thành công!";
+            return RedirectToAction("JobDetail", new { jobID });
+        }
 
 
-			if (cvID == null && resumeFile == null)
-			{
-				TempData["ErrorMessage"] = "Hãy chọn ít nhất 1 CV";
-				return RedirectToAction("JobDetail", new { jobID });
-			}
-
-			
-			if (cvSelectionMethod == "upload")
-			{
-
-				// Gọi ResumeService để upload CV và lấy ID
-				Resume resumeUploaded = UploadResume(resumeFile, user.Id);
-
-				if (resumeUploaded == null)
-				{
-					TempData["ErrorMessage"] = "Lỗi khi tải lên CV. Vui lòng thử lại!";
-					return RedirectToAction("JobDetail", new { jobID });
-				}
-				resumeID = resumeUploaded.Id;
-
-			}
-
-			var application = new Application();
-			application.JobId = jobID;
-			application.ResumeId = resumeID;
-			application.CoverLetter = coverLetter;
-			application.ApplicationStatus = "Đã ứng tuyển";
-			application.ApplicationDate = DateTime.Now;
-
-
-			_dbContext.Applications.Add(application);
-			_dbContext.SaveChanges();
-
-			TempData["SuccessMessage"] = "Ứng tuyển thành công!";
-			return RedirectToAction("JobDetail", new { jobID });
-		}
-
-		private Resume UploadResume(IFormFile resumeFile, int userId)
+        private Resume UploadResume(IFormFile resumeFile, int userId)
 		{
 			
 
