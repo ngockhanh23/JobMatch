@@ -38,15 +38,13 @@ namespace JobMatch
 
 
             var app = builder.Build();
-           
-           
-           
-            app.UseSession();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapHub<NotificationHub>("/notificationHub");
-            });
             app.UseRouting();
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapHub<NotificationHub>("/notificationHub");
+            //});
+            app.MapHub<NotificationHub>("/notificationHub");
+            app.UseSession();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

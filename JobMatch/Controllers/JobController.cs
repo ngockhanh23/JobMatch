@@ -100,7 +100,7 @@ namespace JobMatch.Controllers
             _dbContext.Applications.Add(application);
             await _dbContext.SaveChangesAsync();
 
-            // 🛑 Lấy thông tin nhà tuyển dụng của công việc này
+            
             var job = await _dbContext.Jobs
                 .Include(j => j.Company)
                 .FirstOrDefaultAsync(j => j.Id == jobID);
@@ -118,9 +118,9 @@ namespace JobMatch.Controllers
                 _dbContext.Notifications.Add(notification);
                 await _dbContext.SaveChangesAsync();
 
-                // 🛑 **Gửi thông báo realtime qua SignalR**
-                await _hubContext.Clients.User(job.Company.UserId.ToString())
-                    .SendAsync("ReceiveNotification", notification.Content);
+
+                await _hubContext.Clients.All.SendAsync("ReceiveNotification", $"Ứng viên {user.UserName} đã ứng tuyển vào {job.Title}");
+
             }
 
             TempData["SuccessMessage"] = "Ứng tuyển thành công!";
