@@ -21,9 +21,7 @@ namespace JobMatch.Services
 			{
 				using (var memoryStream = new MemoryStream())
 				{
-					resumeFile.CopyTo(memoryStream);
-
-					// Lấy tên file (loại bỏ phần mở rộng)
+					resumeFile.CopyTo(memoryStream);					
 					string resumeTitle = Path.GetFileNameWithoutExtension(resumeFile.FileName);
 
 					var resume = new Resume

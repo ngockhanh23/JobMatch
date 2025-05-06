@@ -9,11 +9,13 @@
 
 <h2>Chi tiết đơn ứng tuyển</h2>
 
-<div class="mb-3">
-    <a asp-action="ViewResume" asp-controller="Resume" asp-route-id="@Model.Resume?.Id" class="btn btn-primary">Xem CV</a>
-</div>
+
 
 <div class="mb-3">
+    <p><strong>Công việc:</strong> @Model.Job?.Title</p>
+    <p><strong>Công ty:</strong> @Model.Job?.Company?.CompanyName</p>
+
+    <iframe src="@ViewBag.PdfUrl" width="100%" height="600px" frameborder="0"></iframe>
     <label class="form-label">Cover Letter</label>
     <textarea class="form-control" rows="5" readonly>@Model.CoverLetter</textarea>
 </div>
@@ -26,6 +28,9 @@
     <div class="mb-3">
         <form asp-action="UpdateApplicationStatus" method="post">
             <input type="hidden" name="applicationId" value="@Model.Id" />
+            <input type="hidden" name="resumeId" value="@Model.Resume?.Id" />
+            <input type="hidden" name="jobTitle" value="@Model.Job?.Title" />
+            <input type="hidden" name="companyName" value="@Model.Job?.Company?.CompanyName" />
 
             <button type="submit" class="btn btn-success" name="status" value="Accepted"
             @(Model.ApplicationStatus == "Accepted" ? "disabled" : "")>
@@ -37,6 +42,7 @@
                 ❌ Không phù hợp
             </button>
         </form>
+
     </div>
 
 </div>

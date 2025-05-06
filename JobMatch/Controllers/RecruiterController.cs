@@ -1,5 +1,6 @@
 ﻿using JobMatch.Models;
 using JobMatch.Services;
+using JobMatch.Utils.MailUtils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,7 +25,7 @@ namespace JobMatch.Controllers
             return View();
         }
 
- 
+
         public async Task<IActionResult> JobList()
         {
             int userId = _userService.GetUser().Id;
@@ -34,7 +35,7 @@ namespace JobMatch.Controllers
             return View(jobs);
         }
 
-        
+
         public IActionResult Create()
         {
             ViewBag.Companies = _context.Companies.ToList(); // Lấy danh sách công ty
@@ -121,6 +122,8 @@ namespace JobMatch.Controllers
         {
             var application = await _context.Applications
                 .Include(a => a.Resume)
+                .Include(a => a.Job)
+                    .ThenInclude(j => j.Company)
                 .FirstOrDefaultAsync(a => a.Id == applicationId);
 
             if (application == null || application.Resume == null || application.Resume.ResumeFile == null)
@@ -137,10 +140,19 @@ namespace JobMatch.Controllers
         }
 
 
+
         [HttpPost]
-        public async Task<IActionResult> UpdateApplicationStatus(int applicationId, string status)
+        public async Task<IActionResult> UpdateApplicationStatus(int applicationId, string status, string jobTitle, string companyName)
         {
-            var application = await _context.Applications.FindAsync(applicationId);
+            var application = await _context.Applications
+                    .Include(a => a.Job)
+                        .ThenInclude(j => j.Company)
+                            .ThenInclude(c => c.User)
+                    .Include(a => a.Resume)
+                        .ThenInclude(r => r.Candidate) // <- để lấy user ứng viên
+                    .FirstOrDefaultAsync(a => a.Id == applicationId);
+
+
             if (application == null)
             {
                 return NotFound();
@@ -149,9 +161,35 @@ namespace JobMatch.Controllers
             application.ApplicationStatus = status;
             await _context.SaveChangesAsync();
 
+
+            if (status == "Rejected")
+            {
+                // Lấy email người nộp (user) 
+                var userEmail = application.Resume?.Candidate?.Email;
+                if (string.IsNullOrEmpty(userEmail))
+                {
+                    // Xử lý lỗi hoặc ghi log
+                    Console.WriteLine("Không tìm thấy email của ứng viên.");
+                    return BadRequest("Email không hợp lệ.");
+                }
+
+
+                Console.WriteLine("Candidate Email: " + userEmail);
+                Console.WriteLine("Company Name: " + companyName);
+
+                // gửi email từ công ty đến ứng viên:
+                await MailUtils.SendMail(
+                    from: "ngockhanh23032003@gmail.com",
+                    to: userEmail ?? "",
+                    subject: $"Kết quả đơn ứng tuyển vị trí '{jobTitle}' tại {companyName}",
+                    body: MailUtils.GetRejectionEmailBody(jobTitle, companyName)
+                );
+            }
+
             return RedirectToAction("ViewCV", new { applicationId });
         }
-        
+
+
 
     }
 }
